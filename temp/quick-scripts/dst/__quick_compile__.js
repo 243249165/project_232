@@ -1,6 +1,6 @@
 
 (function () {
-var scripts = [{"deps":{"./assets/script/model/public/NodePoolManager":1,"./assets/script/base/BaseComponent":2},"path":"preview-scripts/__qc_index__.js"},{"deps":{"../../base/BaseComponent":2},"path":"preview-scripts/assets/script/model/public/NodePoolManager.js"},{"deps":{},"path":"preview-scripts/assets/script/base/BaseComponent.js"}];
+var scripts = [{"deps":{"./assets/script/model/public/ResManger":4,"./assets/script/model/public/AudioManager":3,"./assets/script/model/public/NodePoolManager":1,"./assets/script/utils/LogUtil":5,"./assets/script/structure/public/ResInfo":6,"./assets/script/base/BaseComponent":2},"path":"preview-scripts/__qc_index__.js"},{"deps":{"../../base/BaseComponent":2},"path":"preview-scripts/assets/script/model/public/NodePoolManager.js"},{"deps":{},"path":"preview-scripts/assets/script/base/BaseComponent.js"},{"deps":{},"path":"preview-scripts/assets/script/model/public/AudioManager.js"},{"deps":{"../../structure/public/ResInfo":6},"path":"preview-scripts/assets/script/model/public/ResManger.js"},{"deps":{},"path":"preview-scripts/assets/script/utils/LogUtil.js"},{"deps":{},"path":"preview-scripts/assets/script/structure/public/ResInfo.js"}];
 var entries = ["preview-scripts/__qc_index__.js"];
 
 /**

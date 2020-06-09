@@ -95,6 +95,17 @@ var NodePoolManager = /** @class */ (function () {
             cc.warn('--------------节点为空，添加异常');
         }
     };
+    /**
+     *
+     * 从节点池中获取节点，如果没有则创建
+     * @author allen
+     * @date 2020-06-08
+     * @param {string} pathName
+     * @param {string} poolName
+     * @param {(node: cc.Node) => void} callback
+     * @returns {void}
+     * @memberof NodePoolManager
+     */
     NodePoolManager.prototype.obtain = function (pathName, poolName, callback) {
         if (pathName) {
             var lastIndex = pathName.lastIndexOf("/");
