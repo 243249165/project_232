@@ -31,6 +31,7 @@ var ResInfo = /** @class */ (function () {
         this.ref = 0;
         /** 依赖资源UUID */
         this.depends = [];
+        this.isKeey = false;
     }
     Object.defineProperty(ResInfo.prototype, "assetKey", {
         /** 获取资源Key（每个资源都有一个唯一Key） */

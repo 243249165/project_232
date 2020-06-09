@@ -11,15 +11,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var ResInfo_1 = require("../../structure/public/ResInfo");
+var LogUtil_1 = require("../../utils/LogUtil");
 var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
 var ResManger = /** @class */ (function () {
     function ResManger() {
-        this._resInfoMap = new Map();
-        this._persistenceMap = new Map();
+        this._resInfoMap = new Map(); // 动态加载资源Map
+        this._loadingRes = new Map(); // 正在加载资源
     }
     ResManger_1 = ResManger;
     Object.defineProperty(ResManger, "Instance", {
-        // private _persistenceMap:Map
         /**
          * 单例
          *
@@ -48,31 +48,62 @@ var ResManger = /** @class */ (function () {
      */
     ResManger.prototype._loadRes = function (url, type, completeCanllback, persistence) {
         var _this = this;
+        // 路径判空
         if (!url) {
-            cc.error('------------------------加载路径为空');
+            LogUtil_1.default.error('------------------------加载路径为空');
         }
-        cc.loader.loadRes(url, type, function (err, resource) {
-            if (err) {
-                cc.error('------------------加载异常：', err);
-                return;
-            }
-            var info;
-            if (_this._resInfoMap[url]) {
-                info = _this._resInfoMap[url];
-            }
-            else {
-                info = new ResInfo_1.default();
-                info.resource = resource;
-                info.type = type;
-                info.url = url;
-            }
-            if (persistence) {
-                _this._persistenceMap.set(url, info);
-            }
+        var info = this._resInfoMap[url];
+        // 从缓存中获取资源
+        if (info && info.resource && info.resource.isValid) {
             if (completeCanllback) {
-                completeCanllback(err, resource);
+                completeCanllback(null, info.resource);
             }
-        });
+        }
+        else {
+            var startTime = cc.sys.now();
+            // 移除加载过长资源
+            for (var key in this._loadingRes) {
+                if (this._loadingRes.hasOwnProperty(key)) {
+                    var time = this._loadingRes[key];
+                    if (cc.sys.now() - time >= 1000 * 10) {
+                        delete this._loadingRes[key];
+                    }
+                }
+            }
+            this._loadingRes[url] = startTime;
+            // 动态加载资源
+            cc.loader.loadRes(url, type, function (err, resource) {
+                // 移除加载记录
+                delete _this._loadingRes[url];
+                // 加载失败
+                if (err) {
+                    cc.error('------------------加载异常：', err);
+                }
+                else {
+                    resource.assetUrl = url;
+                    if (!info) {
+                        info = new ResInfo_1.default();
+                    }
+                    info.resource = resource;
+                    info.type = type;
+                    info.url = url;
+                    // 加载资源的依赖资源uuid
+                    var depends = cc.loader.getDependsRecursively(resource);
+                    info.depends = depends;
+                    // 标记永不释放资源
+                    if (persistence) {
+                        info.isKeey = true;
+                    }
+                    else {
+                        info.isKeey = false;
+                    }
+                    _this._resInfoMap.set(url, info);
+                }
+                if (completeCanllback) {
+                    completeCanllback(err, resource);
+                }
+            });
+        }
     };
     var ResManger_1;
     ResManger = ResManger_1 = __decorate([

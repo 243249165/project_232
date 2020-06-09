@@ -1,28 +1,20 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-const {ccclass, property} = cc._decorator;
+
+const { ccclass } = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class LogUtil {
 
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
-
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-
+    public  error() {
+        CC_DEBUG && cc.error.apply(cc, arguments);
     }
 
-    // update (dt) {}
+    public  warn() {
+        CC_DEBUG && cc.warn.apply(cc, arguments);
+    }
+
+    public  log() {
+        CC_DEBUG && cc.log.apply(cc, arguments);
+    }
+
 }

@@ -26,6 +26,7 @@ export default class ResInfo {
     /** 依赖资源UUID */
     depends: any[] = [];
 
+    isKeey: boolean = false; 
     /** 获取资源Key（每个资源都有一个唯一Key） */
     public get assetKey() {
         if (this.depends.length == 0)

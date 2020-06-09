@@ -1,4 +1,5 @@
 
+require('./assets/script/GlobalSet');
 require('./assets/script/base/BaseComponent');
 require('./assets/script/model/public/AudioManager');
 require('./assets/script/model/public/NodePoolManager');
