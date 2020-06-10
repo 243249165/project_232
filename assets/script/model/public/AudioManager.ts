@@ -1,7 +1,3 @@
-
-
-const { ccclass, property } = cc._decorator;
-
 /**
  *音频管理器
  *
@@ -10,7 +6,6 @@ const { ccclass, property } = cc._decorator;
  * @export
  * @class AudioManager
  */
-@ccclass
 export default class AudioManager {
 
     private static _instance: AudioManager;

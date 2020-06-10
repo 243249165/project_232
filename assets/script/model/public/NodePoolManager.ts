@@ -1,9 +1,6 @@
 import BaseComponent from "../../base/BaseComponent";
 
-const { ccclass } = cc._decorator;
-
 /** 节点池子管理器 */
-@ccclass
 export default class NodePoolManager {
 
     private static _instance: NodePoolManager;

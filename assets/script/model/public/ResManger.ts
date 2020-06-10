@@ -1,17 +1,14 @@
 import ResInfo from "../../structure/public/ResInfo";
-import LogUtil from "../../utils/LogUtil";
 import G from "../../GlobalSet";
+import PathConstants from "../../constants/PathConstants";
 
-
-const { ccclass, property } = cc._decorator;
-
-@ccclass
 export default class ResManger {
 
     private static _instance: ResManger;
 
     private _resInfoMap: Map<string, ResInfo> = new Map<string, ResInfo>();// 动态加载资源Map
     private _loadingRes: Map<string, number> = new Map<string, number>();// 正在加载资源
+    private _uuidRefCountMap: Map<string, number> = new Map<string, number>();// uuid引用计数
 
     /**
      * 单例
@@ -81,6 +78,10 @@ export default class ResManger {
                     let depends: any[] = cc.loader.getDependsRecursively(resource);
                     info.depends = depends;
 
+                    depends.forEach((uuid) => {
+                        this._setUuidRefMap(uuid);
+                    });
+
                     // 标记永不释放资源
                     if (persistence) {
                         info.isKeey = true;
@@ -97,4 +98,111 @@ export default class ResManger {
         }
     }
 
+    /**
+     *设置uuid引用计数
+     *
+     * @author allen
+     * @date 2020-06-10
+     * @private
+     * @param {*} uuid
+     * @memberof ResManger
+     */
+    private _setUuidRefMap(uuid: string): void {
+        let vaule = this._uuidRefCountMap[uuid];
+        if (vaule != null) {
+            vaule += 1;
+        } else {
+            vaule = 1;
+        }
+        this._uuidRefCountMap.set(uuid, vaule);
+    } Î
+
+    /**
+     *删除指定uuid的引用计数
+     *
+     * @author allen
+     * @date 2020-06-10
+     * @private
+     * @param {*} uuid
+     * @memberof ResManger
+     */
+    private _deleteUuidRefMap(uuid: string): void {
+        let vaule = this._uuidRefCountMap[uuid];
+        if (vaule != null) {
+            delete this._uuidRefCountMap[uuid];
+        }
+    }
+
+    /**
+     *加载预制体
+     *
+     * @author allen
+     * @date 2020-06-10
+     * @param {string} url
+     * @param {(error: Error, perfab: cc.Prefab) => void} [completeCanllback]
+     * @param {boolean} [persistance]
+     * @memberof ResManger
+     */
+    public loadPrefab(url: string, completeCanllback?: (error: Error, perfab: cc.Prefab) => void, persistance?: boolean): void {
+        this._loadRes(PathConstants.PREFABS + url, cc.Prefab, completeCanllback, persistance);
+    }
+
+    /**
+     *加载图集
+     *
+     * @author allen
+     * @date 2020-06-10
+     * @param {string} url
+     * @param {(error: Error, perfab: cc.SpriteAtlas) => void} [completeCanllback]
+     * @param {boolean} [persistance]
+     * @memberof ResManger
+     */
+    public loadSpriteAtlas(url: string, completeCanllback?: (error: Error, perfab: cc.SpriteAtlas) => void, persistance?: boolean): void {
+        this._loadRes(PathConstants.ATLAS + url, cc.SpriteAtlas, completeCanllback, persistance);
+    }
+
+    /**
+     *加载图片
+     *
+     * @author allen
+     * @date 2020-06-10
+     * @param {string} url
+     * @param {(error: Error, perfab: cc.SpriteFrame) => void} [completeCanllback]
+     * @param {boolean} [persistance]
+     * @memberof ResManger
+     */
+    public loadSpriteFrame(url: string, completeCanllback?: (error: Error, perfab: cc.SpriteFrame) => void, persistance?: boolean): void {
+        this._loadRes(url, cc.SpriteFrame, completeCanllback, persistance);
+    }
+
+    /**
+     *加载音频
+     *
+     * @author allen
+     * @date 2020-06-10
+     * @param {string} url
+     * @param {(error: Error, perfab: cc.AudioClip) => void} [completeCanllback]
+     * @param {boolean} [persistance]
+     * @memberof ResManger
+     */
+    public loadSpriteAudioClip(url: string, completeCanllback?: (error: Error, perfab: cc.AudioClip) => void, persistance?: boolean): void {
+        this._loadRes(PathConstants.AUDIOES + url, cc.AudioClip, completeCanllback, persistance);
+    }
+
+    public instantiatePrefab(url: string, callback?: (node: cc.Node) => void) {
+        this._loadRes(PathConstants.PREFABS + url, cc.Prefab, (err, perfab) => {
+            let node = this.instantiate(perfab);
+            if (callback) {
+                callback(node);
+            }
+        })
+    }
+
+    public instantiate(target: any): cc.Node {
+        let startTime = cc.sys.now();
+        let newObj = cc.instantiate(target);
+        G.LogUtil.log('----------------instantiated:ms=' + (cc.sys.now() - startTime), target)
+        return newObj
+
+    }
 }
