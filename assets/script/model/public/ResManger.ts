@@ -37,7 +37,7 @@ export default class ResManger {
     private _loadRes(url: string, type?: typeof cc.Asset, completeCanllback?: (err: Error, resource: any) => void, persistence?: boolean): void {
         // 路径判空
         if (!url) {
-            G.LogUtil.error('------------------------加载路径为空');
+            G.LogUtils.error('------------------------加载路径为空');
         }
         let info: ResInfo = this._resInfoMap[url];
         // 从缓存中获取资源
@@ -64,7 +64,7 @@ export default class ResManger {
                 delete this._loadingRes[url];
                 // 加载失败
                 if (err) {
-                    G.LogUtil.error('------------------加载异常：', err);
+                    G.LogUtils.error('------------------加载异常：', err);
                 } else {
                     resource.assetUrl = url;
                     if (!info) {
@@ -181,11 +181,11 @@ export default class ResManger {
      * @author allen
      * @date 2020-06-10
      * @param {string} url
-     * @param {(error: Error, perfab: cc.AudioClip) => void} [completeCanllback]
+     * @param {(error: Error, resource: cc.AudioClip) => void} [completeCanllback]
      * @param {boolean} [persistance]
      * @memberof ResManger
      */
-    public loadSpriteAudioClip(url: string, completeCanllback?: (error: Error, perfab: cc.AudioClip) => void, persistance?: boolean): void {
+    public loadAudioClip(url: string, completeCanllback?: (error: Error, resource: cc.AudioClip) => void, persistance?: boolean): void {
         this._loadRes(PathConstants.AUDIOES + url, cc.AudioClip, completeCanllback, persistance);
     }
 
@@ -201,7 +201,7 @@ export default class ResManger {
     public instantiate(target: any): cc.Node {
         let startTime = cc.sys.now();
         let newObj = cc.instantiate(target);
-        G.LogUtil.log('----------------instantiated:ms=' + (cc.sys.now() - startTime), target)
+        G.LogUtils.log('----------------instantiated:ms=' + (cc.sys.now() - startTime), target)
         return newObj
 
     }

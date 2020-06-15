@@ -1,5 +1,5 @@
 
-export default class LogUtil {
+export default class LogUtils {
 
     public  error() {
         CC_DEBUG && cc.error.apply(cc, arguments);
